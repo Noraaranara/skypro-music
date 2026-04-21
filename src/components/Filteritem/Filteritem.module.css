@@ -1,0 +1,39 @@
+.filter__box {
+  background-color: #313131;
+  border-radius: 12px;
+  padding: 34px ;
+  position: absolute;
+  top: 50px;
+}
+
+
+.filter__list {
+  display: flex;
+  gap: 28px;
+  height: max-content;
+  max-height: 237px;
+  overflow-y: auto;
+  flex-direction: column;
+  width: max-content;
+  padding-right: 24px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgba(75, 73, 73, 1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+  }
+}
+
+.filter__item {
+  cursor: pointer;
+  color: white;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+}
