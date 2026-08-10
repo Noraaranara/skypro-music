@@ -24,6 +24,6 @@ export const useAppSelector = useSelector.withTypes<RootState>();
 export const useAppStore = useStore.withTypes<AppStore>();
 
 // Для старого TS
-export const useAppDispatch: () => AppDispatch = useDispatch;
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const useAppStore: () => AppStore = useStore;
+// export const useAppDispatch: () => AppDispatch = useDispatch;
+// export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+// export const useAppStore: () => AppStore = useStore;
