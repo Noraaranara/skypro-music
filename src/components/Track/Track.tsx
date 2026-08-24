@@ -5,20 +5,25 @@ import style from './Track.module.css';
 import { formatTime } from '@/utils/helpers';
 import { TrackType } from '@/sharedTypes/sharedTypes';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { setCurrentTrack } from '@/store/features/trackSlice';
+import {
+  setCurrentPlaylist,
+  setCurrentTrack,
+} from '@/store/features/trackSlice';
 import classNames from 'classnames';
 
 type trackTypeProp = {
   track: TrackType;
+  playlist: TrackType[];
 };
 
-export default function Track({ track }: trackTypeProp) {
+export default function Track({ track, playlist }: trackTypeProp) {
   const dispatch = useAppDispatch();
   const currentTrack = useAppSelector((state) => state.tracks.currentTrack);
   const currentPlaying = useAppSelector((state) => state.tracks.isPlay);
 
   const onClickTrack = () => {
     dispatch(setCurrentTrack(track));
+    dispatch(setCurrentPlaylist(playlist));
   };
 
   const isCurrentTrack = currentTrack?._id === track._id;
