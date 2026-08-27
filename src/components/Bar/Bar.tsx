@@ -16,7 +16,13 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 
 export default function Bar() {
   const currentTrack = useAppSelector((state) => state.tracks.currentTrack);
+  const playlist = useAppSelector((state) =>
+    state.tracks.isShuffle
+      ? state.tracks.shuffledPlaylist
+      : state.tracks.playlist,
+  );
   const currentPlaying = useAppSelector((state) => state.tracks.isPlay);
+  const isShuffle = useAppSelector((state) => state.tracks.isShuffle)
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const dispatch = useAppDispatch();
@@ -26,7 +32,7 @@ export default function Bar() {
   const [isLoadedTrack, setIsLoadedTrack] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [shuffle, setShuffle] = useState(false);
+//   const [shuffle, setShuffle] = useState(false);
 
   const onTogglePlay = () => {
     if (!audioRef.current) return;
@@ -90,6 +96,15 @@ export default function Bar() {
   };
 
   const onNextTrack = () => {
+    if (!currentTrack) return;
+
+    const curIndex = playlist.findIndex(
+      (track) => track._id === currentTrack._id,
+    );
+
+    if (curIndex === -1 || curIndex >= playlist.length - 1) {
+      return;
+    }
     setIsLoadedTrack(false);
     setCurrentTime(0);
     setDuration(0);
@@ -98,6 +113,15 @@ export default function Bar() {
   };
 
   const onPrevTrack = () => {
+    if (!currentTrack) return;
+
+    const curIndex = playlist.findIndex(
+      (track) => track._id === currentTrack._id,
+    );
+
+    if (curIndex <= 0) {
+      return;
+    }
     setIsLoadedTrack(false);
     setCurrentTime(0);
     setDuration(0);
@@ -105,9 +129,14 @@ export default function Bar() {
     dispatch(setPrevTrack());
   };
 
+  const onTrackEnded = () => {
+    if (!isLoop) {
+      dispatch(setNextTrack());
+    }
+  };
+
   const onToggleShuffle = () => {
     dispatch(toggleShuffle());
-    setShuffle(!shuffle);
   };
 
   useEffect(() => {
@@ -135,7 +164,7 @@ export default function Bar() {
         loop={isLoop}
         onTimeUpdate={onTimeUpdate}
         onLoadedMetadata={onLoadMetadata}
-        // onEnded={() => }
+        onEnded={onTrackEnded}
         src={currentTrack?.track_file}
       ></audio>
       <div className={style.bar__content}>
@@ -193,7 +222,7 @@ export default function Bar() {
               <div
                 onClick={onToggleShuffle}
                 className={classNames(style.player__btnShuffle, style.btnIcon, {
-                  [style.active]: shuffle,
+                  [style.active]: isShuffle,
                 })}
               >
                 <svg className={style.player__btnShuffleSvg}>
