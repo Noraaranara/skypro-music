@@ -18,16 +18,12 @@
 }
 
 .modal__logo {
-    width: 140px;
-    height: 21px;
+    width: auto;
+    height: auto;
     margin-bottom: 34px;
     background-color: transparent;
 }
 
-.modal__logo img {
-    width: 140px;
-    height: auto;
-}
 
 .modal__input {
     width: 100%;

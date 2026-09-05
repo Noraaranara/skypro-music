@@ -44,8 +44,9 @@ export default function Signin() {
           } else {
             setError('Неизвестная ошибка');
           }
+        } else {
+          setError('Неизвестная ошибка');
         }
-        setError(err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -73,7 +74,11 @@ export default function Signin() {
         onChange={onChangePassword}
       />
       <div className={styles.errorContainer}>{error}</div>
-      <button disabled={isLoading} onClick={onSubmit} className={styles.modal__btnEnter}>
+      <button
+        disabled={isLoading}
+        onClick={onSubmit}
+        className={styles.modal__btnEnter}
+      >
         Войти
       </button>
       <Link href={'/auth/signup'} className={styles.modal__btnSignup}>

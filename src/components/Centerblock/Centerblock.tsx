@@ -10,15 +10,16 @@ import SkeletonTrack from '../Loading/Loading';
 
 export type Props = {
   tracks: TrackType[];
+  selectionName?: string;
   loading?: boolean;
   error?: string;
 };
 
-export default function Centerblock({ tracks, loading, error }: Props) {
+export default function Centerblock({ tracks, selectionName, loading, error }: Props) {
   return (
     <div className={style.centerblock}>
       <Search />
-      <h2 className={style.centerblock__h2}>Треки</h2>
+      <h2 className={style.centerblock__h2}>{selectionName ?? 'Треки'}</h2>
       <Filter tracks={tracks} />
       <div className={style.centerblock__content}>
         <div className={style.content__title}>

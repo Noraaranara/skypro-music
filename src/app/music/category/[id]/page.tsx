@@ -13,6 +13,7 @@ export default function CategoryPage() {
   const [tracks, setTracks] = useState<TrackType[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectionName, setSelectionName] = useState ('');
 
   useEffect(() => {
     Promise.all([getSelection(id), getTracks()])
@@ -22,6 +23,9 @@ export default function CategoryPage() {
         );
 
         setTracks(selectionTracks);
+
+        const name = selection.name;
+        setSelectionName(name);
       })
       .catch((err) => {
         if (err instanceof AxiosError) {
@@ -33,14 +37,20 @@ export default function CategoryPage() {
             setError('Неизвестная ошибка');
           }
         }
-      }).finally(() => {
-        setLoading(false)
       })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [id]);
   return (
-      <>
-        {error}
-        <Centerblock tracks={tracks} loading={loading} />;
-      </>
-    );
+    <>
+      {error}
+      <Centerblock
+        selectionName={selectionName}
+        tracks={tracks}
+        loading={loading}
+      />
+      ;
+    </>
+  );
 }
