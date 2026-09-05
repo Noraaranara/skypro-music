@@ -10,3 +10,9 @@ export type TrackType = {
     track_file: string,
     stared_user: number[]
 }
+
+export type playlistReturn = {
+  _id: number;
+  name: string;
+  items: number[];
+} 
