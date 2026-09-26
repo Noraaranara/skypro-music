@@ -105,3 +105,7 @@
   width: 60px;
   text-align: end;
 }
+
+.error {
+  color: white;
+}
