@@ -1,18 +1,25 @@
 'use client';
 
-import { authUser } from '@/services/auth/authApi';
+import { authUser, getToken } from '@/services/auth/authApi';
 import styles from './signin.module.css';
 import classNames from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChangeEvent, useState } from 'react';
 import { AxiosError } from 'axios';
+import { ROUTER } from '@/app/routes';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/store/store';
+import { setAccessToken, setRefreshToken, setUsername } from '@/store/features/authSlice';
 
 export default function Signin() {
+  const dispatch = useAppDispatch()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -32,8 +39,14 @@ export default function Signin() {
     setIsLoading(true);
 
     authUser({ email, password })
+      .then(() => {
+        dispatch(setUsername(email))
+        return getToken({ email, password });
+      })
       .then((res) => {
-        console.log(res);
+        dispatch(setAccessToken(res.access))
+        dispatch(setRefreshToken(res.refresh))
+        router.push(ROUTER.main);
       })
       .catch((err) => {
         if (err instanceof AxiosError) {
