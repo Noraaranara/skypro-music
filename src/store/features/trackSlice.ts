@@ -7,6 +7,11 @@ type initialStateType = {
   playlist: TrackType[];
   shuffledPlaylist: TrackType[];
   isShuffle: boolean;
+  allTracks: TrackType[];
+  favoriteTracks: TrackType[];
+  dislikedTracks: TrackType[];
+  fetchError: null | string;
+  fetchIsLoading: boolean;
 };
 
 const initialState: initialStateType = {
@@ -15,6 +20,11 @@ const initialState: initialStateType = {
   playlist: [],
   shuffledPlaylist: [],
   isShuffle: false,
+  allTracks: [],
+  favoriteTracks: [],
+  dislikedTracks: [],
+  fetchError: null,
+  fetchIsLoading: false,
 };
 
 const trackSlice = createSlice({
@@ -58,10 +68,33 @@ const trackSlice = createSlice({
       );
 
       if (curIndex <= 0) {
-    return;
-  }
+        return;
+      }
 
-  state.currentTrack = playlist[curIndex - 1];
+      state.currentTrack = playlist[curIndex - 1];
+    },
+    setAllTracks: (state, action: PayloadAction<TrackType[]>) => {
+      state.allTracks = action.payload;
+    },
+    setFavoriteTracks: (state, action: PayloadAction<TrackType[]>) => {
+      state.favoriteTracks = action.payload;
+    },
+    setDislikedTracks: (state, action: PayloadAction<TrackType[]>) => {
+      state.dislikedTracks = action.payload;
+    },
+    addLikedTracks: (state, action: PayloadAction<TrackType>) => {
+      state.favoriteTracks.push(action.payload);
+    },
+    removeLikedTracks: (state, action: PayloadAction<TrackType>) => {
+      state.favoriteTracks = state.favoriteTracks.filter(
+        (track) => track._id !== action.payload._id,
+      );
+    },
+    setFetchError: (state, action: PayloadAction<string>) => {
+      state.fetchError = action.payload;
+    },
+    setFetchIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.fetchIsLoading = action.payload;
     },
   },
 });
@@ -73,5 +106,12 @@ export const {
   toggleShuffle,
   setNextTrack,
   setPrevTrack,
+  setAllTracks,
+  setFavoriteTracks,
+  setDislikedTracks,
+  addLikedTracks,
+  removeLikedTracks,
+  setFetchError,
+  setFetchIsLoading,
 } = trackSlice.actions;
 export const trackSliceReducer = trackSlice.reducer;

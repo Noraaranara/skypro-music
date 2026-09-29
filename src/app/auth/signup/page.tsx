@@ -7,6 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChangeEvent, useState } from 'react';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { ROUTER } from '@/app/routes';
 
 export default function SignUp() {
   const [username, setUsername] = useState('');
@@ -15,6 +17,8 @@ export default function SignUp() {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -50,8 +54,8 @@ export default function SignUp() {
     setIsLoading(true);
 
     registerUser({ username, email, password })
-      .then((res) => {
-        console.log(res);
+      .then(() => {
+        router.push(ROUTER.signin)
       })
       .catch((err) => {
         if (err instanceof AxiosError) {
