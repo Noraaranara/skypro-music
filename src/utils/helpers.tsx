@@ -1,34 +1,27 @@
 import { TrackType } from '@/sharedTypes/sharedTypes';
 
 export function getUniqueValuesByKey(
-  arr: TrackType[],
+  arr: TrackType[] | undefined,
   key: keyof TrackType,
 ): string[] {
-  //Используем Set для хранения уникальных значений
   const uniqValues = new Set<string>();
 
-  //Проходим по каждому объекту массива
-  arr.forEach((item) => {
+  arr?.forEach((item) => {
     const value = item[key];
 
-    //Если значение - массив строк
     if (Array.isArray(value)) {
       value.forEach((v) => {
-        if (v) {
+        if (typeof v === 'string' && v) {
           uniqValues.add(v);
         }
       });
-    }
-    //Если значение - строка
-    else if (typeof value === 'string') {
+    } else if (typeof value === 'string') {
       uniqValues.add(value);
     }
   });
 
-  //Преобразуем Set обратно в массив и возвращаем
   return Array.from(uniqValues);
 }
-
 export function formatTime(time: number) {
   const minutes = Math.floor(time / 60);
   const inputSeconds = Math.floor(time % 60);

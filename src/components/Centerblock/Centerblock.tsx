@@ -1,3 +1,5 @@
+'use client';
+
 import style from './Centerblock.module.css';
 import classNames from 'classnames';
 import Search from '../Search/Search';
@@ -8,7 +10,9 @@ import SkeletonTrack from '../Loading/Loading';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useEffect } from 'react';
 import { likedTracks } from '@/services/tracks/tracksApi';
-import { setFavoriteTracks } from '@/store/features/trackSlice';
+import {
+  setFavoriteTracks,
+} from '@/store/features/trackSlice';
 import { withReauth } from '@/utils/withReAuth';
 
 export type CenterBlockProps = {
@@ -16,6 +20,7 @@ export type CenterBlockProps = {
   isLoading: boolean;
   errorRes: string | null;
   title: string;
+  pagePlaylist: TrackType[];
 };
 
 export default function Centerblock({
@@ -23,9 +28,10 @@ export default function Centerblock({
   isLoading,
   errorRes,
   title,
+  pagePlaylist,
 }: CenterBlockProps) {
   const access = useAppSelector((state) => state.auth.access);
-  const refresh = useAppSelector((state) => state.auth.access);
+  const refresh = useAppSelector((state) => state.auth.refresh);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -48,11 +54,12 @@ export default function Centerblock({
 
     getLikedTracks();
   }, [access, refresh, dispatch]);
+
   return (
     <div className={style.centerblock}>
       <Search />
       <h2 className={style.centerblock__h2}>{title}</h2>
-      <Filter tracks={tracks} />
+      <Filter tracks={pagePlaylist ?? []} />
       <div className={style.centerblock__content}>
         <div className={style.content__title}>
           <div className={classNames(style.playlistTitle__col, style.col01)}>
@@ -82,10 +89,12 @@ export default function Centerblock({
               <SkeletonTrack />
               <SkeletonTrack />
             </>
-          ) : (
-            tracks.map((track) => (
+          ) : tracks.length ? (
+            tracks?.map((track) => (
               <Track key={track._id} track={track} playlist={tracks} />
             ))
+          ) : (
+            <div className={style.error}>Нет подходящих треков</div>
           )}
         </div>
       </div>

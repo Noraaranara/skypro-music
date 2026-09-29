@@ -12,6 +12,7 @@ export default function FavoritePlaylist() {
 
   return (
     <Centerblock
+    pagePlaylist={favoriteTracks}
       tracks={favoriteTracks}
       errorRes={fetchError}
       isLoading={fetchIsLoading}
