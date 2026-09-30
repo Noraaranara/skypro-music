@@ -5,8 +5,12 @@ import style from './Filter.module.css';
 import { getUniqueValuesByKey } from '@/utils/helpers';
 import FilterItem from '../Filteritem/Filteritem';
 import { TrackType } from '@/sharedTypes/sharedTypes';
-import { useAppDispatch } from '@/store/store';
-import { setFilterAuthors, setFilterGenres, setFilterYears } from '@/store/features/trackSlice';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import {
+  setFilterAuthors,
+  setFilterGenres,
+  setFilterYears,
+} from '@/store/features/trackSlice';
 
 type filterProp = {
   tracks: TrackType[];
@@ -22,6 +26,8 @@ export default function Filter({ tracks }: filterProp) {
     }
     setActiveFilter(nameFilter);
   };
+
+  const filters = useAppSelector((state) => state.tracks.filters);
 
   const authors = getUniqueValuesByKey(tracks, 'author');
   const genres = getUniqueValuesByKey(tracks, 'genre');
@@ -46,6 +52,7 @@ export default function Filter({ tracks }: filterProp) {
         list={authors}
         titleFilter={'исполнителю'}
         onselect={onSelectAuthor}
+        selectedValues={filters.authors}
       />
       <FilterItem
         activeFilter={activeFilter}
@@ -54,6 +61,7 @@ export default function Filter({ tracks }: filterProp) {
         list={years}
         titleFilter={'году выпуска'}
         onselect={onSelectYear}
+        selectedValues={filters.years === 'По умолчанию' ? [] : [filters.years]}
       />
       <FilterItem
         activeFilter={activeFilter}
@@ -62,6 +70,7 @@ export default function Filter({ tracks }: filterProp) {
         list={genres}
         titleFilter={'жанру'}
         onselect={onSelectGenre}
+        selectedValues={filters.genres}
       />
     </div>
   );

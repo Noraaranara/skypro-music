@@ -10,10 +10,14 @@ import { AxiosError } from 'axios';
 import { ROUTER } from '@/app/routes';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/store/store';
-import { setAccessToken, setRefreshToken, setUsername } from '@/store/features/authSlice';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setUsername,
+} from '@/store/features/authSlice';
 
 export default function Signin() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -40,12 +44,18 @@ export default function Signin() {
 
     authUser({ email, password })
       .then(() => {
-        dispatch(setUsername(email))
+        dispatch(setUsername(email));
+        localStorage.setItem('username', email);
+
         return getToken({ email, password });
       })
       .then((res) => {
-        dispatch(setAccessToken(res.access))
-        dispatch(setRefreshToken(res.refresh))
+        dispatch(setAccessToken(res.access));
+        dispatch(setRefreshToken(res.refresh));
+
+        localStorage.setItem('access', res.access);
+        localStorage.setItem('refresh', res.refresh);
+
         router.push(ROUTER.main);
       })
       .catch((err) => {

@@ -1,7 +1,7 @@
-import Link from "next/link";
+import NotFound from "@/components/NotFound/NotFound";
 
-export default function NotFound() {
+export default function NotFoundPage() {
   return (
-    <Link href={'/music/main'}>на главную</Link>
-  )
+    <NotFound />
+  );
 }

@@ -11,7 +11,7 @@ import {
   setPrevTrack,
   toggleShuffle,
 } from '@/store/features/trackSlice';
-import { formatTime, getTimePanel } from '@/utils/helpers';
+import { formatTime, } from '@/utils/helpers';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import { useLikeTrack } from '@/hooks/uselikeTracks';
 
@@ -33,8 +33,6 @@ export default function Bar() {
   const [isLoadedTrack, setIsLoadedTrack] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  //   const [shuffle, setShuffle] = useState(false);
-
   const onTogglePlay = () => {
     if (!audioRef.current) return;
 
