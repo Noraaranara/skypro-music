@@ -1,0 +1,50 @@
+.NotFound__wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background-color: #181818;
+}
+
+.NotFound__title {
+  font-size: 160px;
+  font-weight: 400;
+  color: white;
+  margin: 0;
+  line-height: 168px;
+}
+
+.NotFound__text {
+  font-size: 32px;
+  color: white;
+  font-weight: 400;
+  margin: 0;
+  line-height: 40px;
+}
+
+.NotFound__span {
+  font-weight: 400;
+  font-size: 18px;
+  color: #4e4e4e;
+  max-width: 314px;
+  text-align: center;
+  line-height: 24px;
+}
+
+.NotFound__link {
+  padding: 12px 46px;
+  background: #580ea2;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  transition: 0.2s;
+  font-size: 18px;
+
+  &:hover {
+    background: #3f007d;
+  }
+}

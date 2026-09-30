@@ -3,36 +3,63 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Navigation.module.css';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { navigationApp, ROUTER } from '@/app/routes';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { clearUser } from '@/store/features/authSlice';
+import {
+  clearUser,
+  setAccessToken,
+  setRefreshToken,
+  setUsername,
+} from '@/store/features/authSlice';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function Navigation() {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const username = useAppSelector((state) => state.auth.username);
+  const access = useAppSelector((state) => state.auth.access);
   const router = useRouter();
   const pathname = usePathname();
 
-  const logout = useCallback(() => {
-  dispatch(clearUser());
+  useEffect(() => {
+    const username = localStorage.getItem('username');
+    const access = localStorage.getItem('access');
+    const refresh = localStorage.getItem('refresh');
 
-  if (pathname === ROUTER.favorites) {
-    router.push(ROUTER.main);
-  }
-}, [dispatch, pathname, router]);
+    if (username) {
+      dispatch(setUsername(username));
+    }
+
+    if (access) {
+      dispatch(setAccessToken(access));
+    }
+
+    if (refresh) {
+      dispatch(setRefreshToken(refresh));
+    }
+  }, [dispatch]);
+
+  const logout = useCallback(() => {
+    dispatch(clearUser());
+
+    localStorage.removeItem('username');
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
+
+    if (pathname === ROUTER.favorites) {
+      router.push(ROUTER.main);
+    }
+  }, [dispatch, pathname, router]);
 
   const navigationItems = useMemo(() => {
     return navigationApp.filter((el) => {
-      if (el.url === ROUTER.favorites && !username) {
+      if (el.url === ROUTER.favorites && !access) {
         return false;
       }
 
       return true;
     });
-  }, [username]);
+  }, [access]);
   return (
     <nav className={styles.main__nav}>
       <div className={styles.nav__logo}>
@@ -54,7 +81,7 @@ export default function Navigation() {
           <ul className={styles.menu__list}>
             {navigationItems.map((el) => (
               <li className={styles.menu__item} key={el.url}>
-                {el.action === 'auth' && username ? (
+                {el.action === 'auth' && access ? (
                   <button className={styles.menu__link} onClick={logout}>
                     Выйти
                   </button>
