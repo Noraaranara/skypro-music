@@ -10,9 +10,7 @@ import SkeletonTrack from '../Loading/Loading';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useEffect } from 'react';
 import { likedTracks } from '@/services/tracks/tracksApi';
-import {
-  setFavoriteTracks,
-} from '@/store/features/trackSlice';
+import { setFavoriteTracks } from '@/store/features/trackSlice';
 import { withReauth } from '@/utils/withReAuth';
 
 export type CenterBlockProps = {
@@ -77,25 +75,28 @@ export default function Centerblock({
             </svg>
           </div>
         </div>
-        <div className={style.content__playlist}>
-          {errorRes ? (
-            <div className={style.error}>{errorRes}</div>
-          ) : isLoading ? (
-            <>
-              <SkeletonTrack />
-              <SkeletonTrack />
-              <SkeletonTrack />
-              <SkeletonTrack />
-              <SkeletonTrack />
-              <SkeletonTrack />
-            </>
-          ) : tracks.length ? (
-            tracks?.map((track) => (
-              <Track key={track._id} track={track} playlist={tracks} />
-            ))
-          ) : (
-            <div className={style.error}>Нет подходящих треков</div>
-          )}
+        <div className={style.content__playlistWrapper}>
+          <div className={style.content__playlist}>
+            {errorRes ? (
+              <div className={style.error}>{errorRes}</div>
+            ) : isLoading ? (
+              <>
+                <SkeletonTrack />
+                <SkeletonTrack />
+                <SkeletonTrack />
+                <SkeletonTrack />
+                <SkeletonTrack />
+                <SkeletonTrack />
+              </>
+            ) : tracks.length ? (
+              tracks?.map((track) => (
+                <Track key={track._id} track={track} playlist={tracks} />
+              ))
+            ) : (
+              <div className={style.error}>Нет подходящих треков</div>
+            )}
+          </div>
+          <div className={style.bottomSpace}></div>
         </div>
       </div>
     </div>
