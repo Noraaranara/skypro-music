@@ -7,45 +7,45 @@ import {
   setFetchIsLoading,
 } from '@/store/features/trackSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { AxiosError } from 'axios';
-import { useEffect, useRef } from 'react';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 export default function FetchingTracks() {
   const dispatch = useAppDispatch();
-   const { allTracks } = useAppSelector(
-    (state) => state.tracks,
-  );
 
-  const hasRequested = useRef(false);
+  const { allTracks, fetchIsLoading } = useAppSelector((state) => state.tracks);
 
   useEffect(() => {
-    if (allTracks.length > 0) {
+    if (allTracks.length > 0 || fetchIsLoading) {
       return;
     }
 
-    if (hasRequested.current) {
-      return;
-    }
-    hasRequested.current = true;
     dispatch(setFetchIsLoading(true));
-    
+
     getTracks()
       .then((res) => {
         dispatch(setAllTracks(res));
       })
       .catch((error) => {
-        if (error instanceof AxiosError)
+        if (axios.isAxiosError(error)) {
           if (error.response) {
-            dispatch(setFetchError(error.response.data));
+            const message =
+              typeof error.response.data === 'string'
+                ? error.response.data
+                : error.response.data?.message || 'Ошибка загрузки треков';
+
+            dispatch(setFetchError(message));
           } else if (error.request) {
-            dispatch(setFetchError('Произошла ошибка попробуйте позже'));
+            dispatch(setFetchError('Произошла ошибка, попробуйте позже'));
           } else {
             dispatch(setFetchError('Неизвестная ошибка'));
           }
+        }
       })
       .finally(() => {
         dispatch(setFetchIsLoading(false));
       });
-  }, [allTracks.length, dispatch]);
-  return <></>;
+  }, [allTracks.length, fetchIsLoading, dispatch]);
+
+  return null;
 }

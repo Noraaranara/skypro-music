@@ -3,71 +3,66 @@
 import { useState } from 'react';
 import style from './Filter.module.css';
 import { getUniqueValuesByKey } from '@/utils/helpers';
-import classNames from 'classnames';
 import FilterItem from '../Filteritem/Filteritem';
-import { Props } from '../Centerblock/Centerblock';
+import { TrackType } from '@/sharedTypes/sharedTypes';
+import { useAppDispatch } from '@/store/store';
+import { setFilterAuthors, setFilterGenres, setFilterYears } from '@/store/features/trackSlice';
 
-export default function Filter({ tracks }: Props) {
-  type FilterType = 'author' | 'year' | 'genre' | null;
+type filterProp = {
+  tracks: TrackType[];
+};
 
-  const [activeFilter, setActiveFilter] = useState<FilterType>(null);
+export default function Filter({ tracks }: filterProp) {
+  const [activeFilter, setActiveFilter] = useState<null | string>(null);
+  const dispatch = useAppDispatch();
 
-  const toggleFilter = (name: FilterType) => {
-    setActiveFilter(activeFilter === name ? null : name);
+  const changeActiveFilter = (nameFilter: string) => {
+    if (activeFilter === nameFilter) {
+      return setActiveFilter(null);
+    }
+    setActiveFilter(nameFilter);
   };
 
   const authors = getUniqueValuesByKey(tracks, 'author');
-  const years = [
-    ...new Set(
-      getUniqueValuesByKey(tracks, 'release_date').map((date) =>
-        date.slice(0, 4),
-      ),
-    ),
-  ].sort((a, b) => Number(b) - Number(a));
   const genres = getUniqueValuesByKey(tracks, 'genre');
+  const years = ['Сначала новые', 'Сначала старые', 'По умолчанию'];
+
+  const onSelectAuthor = (author: string) => {
+    dispatch(setFilterAuthors(author));
+  };
+  const onSelectGenre = (genre: string) => {
+    dispatch(setFilterGenres(genre));
+  };
+  const onSelectYear = (year: string) => {
+    dispatch(setFilterYears(year));
+  };
   return (
     <div className={style.centerblock__filter}>
       <div className={style.filter__title}>Искать по:</div>
-
-      <div className={style.filter__wrapper}>
-        <div
-          className={classNames(style.filter__button, {
-            [style.active]: activeFilter === 'author',
-          })}
-          onClick={() => toggleFilter('author')}
-        >
-          исполнителю
-        </div>
-        {activeFilter === 'author' && (
-          <FilterItem type="author" options={authors} />
-        )}
-      </div>
-
-      <div className={style.filter__wrapper}>
-        <div
-          className={classNames(style.filter__button, {
-            [style.active]: activeFilter === 'year',
-          })}
-          onClick={() => toggleFilter('year')}
-        >
-          году выпуска
-        </div>
-        {activeFilter === 'year' && <FilterItem type="year" options={years} />}
-      </div>
-
-      <div className={style.filter__wrapper}>
-        <div
-          className={classNames(style.filter__button, {
-            [style.active]: activeFilter === 'genre',
-          })}
-          onClick={() => toggleFilter('genre')}
-        >
-          жанру
-        </div>
-        {activeFilter === 'genre' && (
-          <FilterItem type="genre" options={genres} />
-        )}
-      </div>
+      <FilterItem
+        activeFilter={activeFilter}
+        changeActiveFilter={changeActiveFilter}
+        nameFilter={'author'}
+        list={authors}
+        titleFilter={'исполнителю'}
+        onselect={onSelectAuthor}
+      />
+      <FilterItem
+        activeFilter={activeFilter}
+        changeActiveFilter={changeActiveFilter}
+        nameFilter={'year'}
+        list={years}
+        titleFilter={'году выпуска'}
+        onselect={onSelectYear}
+      />
+      <FilterItem
+        activeFilter={activeFilter}
+        changeActiveFilter={changeActiveFilter}
+        nameFilter={'genre'}
+        list={genres}
+        titleFilter={'жанру'}
+        onselect={onSelectGenre}
+      />
     </div>
   );
 }
